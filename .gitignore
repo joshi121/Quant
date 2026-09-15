@@ -1,0 +1,10 @@
+# Sabse important (Iske bina repo crash ya leak ho jayegi)
+backend/node_modules/
+frontend/node_modules/
+*.env
+
+# Local machine ka kachra block karne ke liye
+frontend/dist/
+frontend/build/
+*.log
+node-portable/

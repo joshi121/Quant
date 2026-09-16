@@ -4,12 +4,16 @@
     import logger from "../utils/logger.js";
 
 
+    const isProduction = process.env.NODE_ENV === "production" || Boolean(process.env.RENDER);
+
     const generateToken_Cookie = (userId, res)=>{
-        const secret = process.env.JWT_SECRET_KEY;
+        const secret = process.env.JWT_SECRET_KEY || process.env.JWT_SECRET || "supersecretkey12345";
         const token = jwt.sign({id: userId}, secret, {expiresIn : "1d"});
         res.cookie("token" , token, {
             httpOnly: true,
-            maxAge: 1 * 24 * 60 * 60 * 1000 // 1 day
+            maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
+            sameSite: isProduction ? "none" : "lax",
+            secure: isProduction ? true : false,
         });
     };
 
@@ -112,7 +116,9 @@
             }
             return res.status(200).cookie("token", "", { 
                     httpOnly: true,
-                    maxAge: 0
+                    maxAge: 0,
+                    sameSite: isProduction ? "none" : "lax",
+                    secure: isProduction ? true : false,
                 }).json({
                     message: "User logged out successfully"
                 });
